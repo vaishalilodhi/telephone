@@ -1,24 +1,37 @@
-class login_model extends CI_Model {
+<?php
+class login_model extends CI_model {
 
-        public $username;
-        public $password;
+    public function user_data($user)
+    {
+        $this->db->insert('user_data', $user);
+    }
 
-        public function insert_entry()
-        {
-                $this->title    = $_POST['title']; // please read the below note
-                $this->content  = $_POST['content'];
-                $this->date     = time();
-
-                $this->db->insert('entries', $this);
+    public function logged_in($uname, $pass)
+    {
+        $this->db->select('*');
+        $this->db->from('user_data');
+        $this->db->where('userName', $uname);
+        $this->db->where('password', $pass);
+        if ($query = $this->db->get()) {
+            return $query->row_array();
+        } else {
+            return false;
         }
+    }
 
-        public function update_entry()
-        {
-                $this->title    = $_POST['title'];
-                $this->content  = $_POST['content'];
-                $this->date     = time();
+    public function user_check($uname)
+    {
+        $this->db->select('*');
+        $this->db->from('user_data');
+        $this->db->where('username', $uname);
+        $query = $this->db->get();
 
-                $this->db->update('entries', $this, array('id' => $_POST['id']));
+        if ($query->num_rows() > 0) {
+            return false;
+        } else {
+            return true;
         }
+    }
 
 }
+?>
