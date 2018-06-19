@@ -1,8 +1,8 @@
 <?php
 require_once( dirname( __FILE__ ) . '/include/navbar.php');
 ?>
-
 <div class="container">
+    <h1>Log in</h1>
     <div class="row">
         <?php
         $success_msg = $this->session->flashdata('success_msg');
