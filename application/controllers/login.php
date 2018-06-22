@@ -8,11 +8,21 @@ class login extends CI_Controller {
         //$this->load->helper('url');
         $this->load->model('login_model');
         $this->load->library('session');
+        $this->load->library('form_validation');
     }
 
     public function index()
     {
-        $this->load->view('loginView');
+        $this->form_validation->set_rules('username', 'user_name', 'required');
+        // $this->form_validation->set_rules('password', 'Password', 'required');
+        // $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
+        // $this->form_validation->set_rules('email', 'Email', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('loginView');
+        } else {
+            $this->load->view('user_profile');
+        }
     }
 
     public function register()
@@ -23,19 +33,14 @@ class login extends CI_Controller {
     public function register_user()
     {
         $user = array(
-            'userName' => $this->input->post('uname'),
-            'firstName' => $this->input->post('fname'),
-            'middleName' => $this->input->post('mname'),
-            'lastName' => $this->input->post('lname'),
-            'email' => $this->input->post('user_email'),
+            'username' => $this->input->post('uname'),
+            'fullname' => $this->input->post('fullname'),
+            'emailid' => $this->input->post('emailid'),
             'password' => md5($this->input->post('new_password')),
-            'mobile' => $this->input->post('mobile'),
-            'landline' => $this->input->post('landline'),
-            'notes' => $this->input->post('notes'),
-            'profile' => $this->input->post('profile')
+            'mobile' => $this->input->post('mobile')
         );
 
-        $userNameCheck = $this->login_model->user_check($user['userName']);
+        $userNameCheck = $this->login_model->user_check($user['username']);
         if ($userNameCheck) {
             $this->login_model->user_data($user);
             $this->session->set_flashdata('success_msg', 'Registered successfully. Now login to your account.');
@@ -46,23 +51,28 @@ class login extends CI_Controller {
         }
     }
 
-    function login_user()
+    function logged_in()
     {
         $user_login = array(
-            'userName' => $this->input->post('user_name'),
+            'username' => $this->input->post('user_name'),
             'password' => md5($this->input->post('user_password'))
         );
-
-        $data = $this->login_model->logged_in($user_login['userName'], $user_login['password']);
+        $data = $this->login_model->login_user($user_login['username'], $user_login['password']);
         if ($data) {
-            $this->session->set_userdata('user_id', $data['id']);
-            $this->session->set_userdata('user_email', $data['email']);
-            $this->session->set_userdata('user_name', $data['userName']);
+            $this->session->set_userdata('user_id', $data['userid']);
+            $this->session->set_userdata('emailid', $data['emailid']);
+            $this->session->set_userdata('username', $data['username']);
             $this->load->view('user_profile');
         } else {
             $this->session->set_flashdata('error_msg', 'User name or password is wrong, Please try again.');
             $this->load->view('loginView');
         }
+    }
+
+    public function user_logout()
+    {
+        $this->session->sess_destroy();
+        redirect('login', 'refresh');
     }
 
 }
