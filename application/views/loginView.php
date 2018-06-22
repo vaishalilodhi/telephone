@@ -12,7 +12,7 @@ require_once( dirname( __FILE__ ) . '/include/navbar.php');
         <?php } elseif(isset($error_msg)) { ?>
             <div class="alert alert-danger"><?=$error_msg;?></div>
         <?php } ?>
-        <form class="col-md-4" method="post" action="<?=base_url('login/login_user');?>">
+        <form class="col-md-4" method="post" action="<?=base_url('login/logged_in');?>">
             <div class="form-group">
                 <label for="user_name">User Name</label>
                 <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Enter User Name">

@@ -7,5 +7,10 @@ class Profile extends CI_Controller {
         $this->load->view('user_profile');
     }
 
+    public function telephone()
+    {
+        $this->load->view('telephoneView');
+    }
+
 }
 ?>
